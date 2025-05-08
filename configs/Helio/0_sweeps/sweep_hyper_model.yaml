@@ -1,0 +1,46 @@
+program: train_and_eval/regression_training_transf.py
+name: hyper_model
+method: grid
+metric:
+  goal: minimize
+  name: sweep_eval_loss_avg
+parameters:
+  
+  img_res: 
+    values: [24,48,96]
+  patch_size: 
+    values: [2,3,6]
+
+
+command:
+  - ${interpreter}
+  - ${program}
+  - ${args}
+  - --project_name
+  - TSViT-reg-v3
+  - --exp_name
+  - hyper_model
+  - --architecture 
+  - TSViT_reg
+  - --config 
+  - configs/Helio/TSViT_reg.yaml
+  - --dataset 
+  - Helio_sza80
+  - --start_date_train 
+  - 2015-01-01T00
+  - --end_date_train 
+  - 2016-01-01T00
+  - --start_date_eval 
+  - 2016-01-01T00 
+  - --end_date_eval 
+  - 2017-01-01T00
+  - --wandb
+  - --dset_patching 
+  - --train
+  - --max_seq_len
+  - 16
+  - --num_epochs
+  - 10
+  - --batch_size
+  - 64  # adapt according to hard-ware
+  

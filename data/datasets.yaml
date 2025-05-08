@@ -1,0 +1,7 @@
+# make sure to download the training dataset first
+Helio_sza80:
+    basedir: "data/Helio/2015_2020/sza80"
+    paths_train: "data/Helio/2015_2020/sza80"
+    paths_eval: "data/Helio/2015_2020/sza80"
+    paths_stats: "data/Helio/stats/stats_NC_2015_2020_sza80.csv"
+# ------------------------------------------------------------------------------------------------------------------

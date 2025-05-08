@@ -1,0 +1,21 @@
+# 
+__pycache__/
+
+# chkpt and tensorboard
+models/saved_models/Helio/*
+!models/saved_models/Helio/.gitkeep
+
+#
+wandb/*
+!wandb/.gitkeep
+
+# api keys
+*.key
+
+# RCP stuff
+RCP/
+
+# data 
+data/Helio/2015_2020
+data/Helio/stats
+data/Helio/Helio.zip

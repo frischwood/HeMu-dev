@@ -1,0 +1,23 @@
+name: HeMu-dev
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - xarray
+  - netcdf4
+  - cartopy
+  - wandb
+  - pandas
+  - geopandas
+  - matplotlib
+  - numpy
+  - python
+  - rioxarray
+  - einops
+  - tensorboard
+  - pip:
+    - torch
+    - torchvision
+    - --index-url https://download.pytorch.org/whl/cu128 # modify this line to match your CUDA version (e.g cu11)
+
+

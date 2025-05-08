@@ -1,0 +1,62 @@
+program: train_and_eval/regression_training_transf.py
+name: ablation_var
+method: grid
+metric:
+  goal: minimize
+  name: sweep_eval_loss_avg
+parameters:
+  input_var_names: 
+    values:
+      - "[slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor,  aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_097, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_108, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_120, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_134]"
+      - "[sw_dir_cor, slope, aspectSin, aspectCos, SRTMGL3_DEM, SAA, SZA, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120]"
+
+  target_var_names: 
+    values:
+      - "[SISGHI-No-Horizon]"
+
+command:
+  - ${interpreter}
+  - ${program}
+  - ${args}
+  - --project_name
+  - TSViT-reg-v3
+  - --exp_name
+  - ablation_var
+  - --architecture 
+  - TSViT_reg
+  - --config 
+  - configs/Helio/TSViT_reg.yaml 
+  - --dataset 
+  - Helio_sza80
+  - --start_date_train 
+  - 2015-01-01T00
+  - --end_date_train 
+  - 2017-01-01T00
+  - --start_date_eval 
+  - 2017-01-01T00 
+  - --end_date_eval 
+  - 2018-01-01T00
+  - --wandb
+  - --dset_patching 
+  - --train
+  - --max_seq_len
+  - 40 # choose emulator's seqlen
+  - --num_epochs
+  - 10
+  - --batch_size
+  - 16 # adapt according to hard-ware

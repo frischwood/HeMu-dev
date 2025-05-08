@@ -1,0 +1,79 @@
+MODEL:
+  project_name:
+  architecture: TSViT_reg
+  exp_name: 
+  reg_mode: True
+   
+  img_res:  # input image res (sampled from original): controls speed and how far in img attention is allowed
+  max_seq_len:  #
+  num_channels: # (runtime set))
+  num_classes:  # (runtime set) setting this value to target channel number allows to use this ViT for Reg
+  dropout: 0.
+  patch_size: # img_res%patch_size must be 0
+  dim: 128
+  temporal_depth: 8
+  spatial_depth: 4
+  heads: 4
+  pool: 'cls'
+  dim_head: 64
+  emb_dropout: 0.
+  scale_dim: 4
+  use_hod: False
+
+DATASETS:
+  train:
+    dataset: #'Helio_dalco'
+    img_res: 
+    start_date: 
+    end_date: 
+    input_var_names: 
+    target_var_names: 
+    batch_size: 
+    num_workers: 
+    plot_img: 
+    plot_scatter: 
+    plot_qq: 
+
+  eval:
+    dataset: 
+    img_res: 
+    start_date: 
+    end_date: 
+    input_var_names: 
+    target_var_names: 
+    batch_size: 
+    num_workers: 
+    plot_img: 
+    plot_scatter: 
+    plot_qq: 
+    
+
+  infer:
+    dataset: 
+    img_res: 
+    start_date: 
+    end_date: 
+    input_var_names: 
+    target_var_names: 
+    batch_size: 
+    num_workers: 
+    perm_test:
+    
+SOLVER:
+  num_epochs: 
+  loss_function: reg_custom_loss
+  alpha_regLoss: 1 # 1=pure MSE, 0=pure STD
+  num_warmup_epochs: 10
+  lr_scheduler: ReduceLROnPlateau
+  lr_base: 1e-3
+  lr_min: 1e-6
+  lr_start: 1e-8
+  num_cycles: 1
+  patience: 1
+  reset_lr: True   # resets lr to base value when loading pretrained model
+  weight_decay: 0.00
+
+CHECKPOINT:
+  load_from_checkpoint: # runtime set
+  save_path: # runtime set
+

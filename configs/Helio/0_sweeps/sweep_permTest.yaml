@@ -1,0 +1,53 @@
+program: train_and_eval/regression_training_transf.py
+name: permTest
+method: grid
+metric:
+  goal: minimize
+  name: sweep_eval_loss_avg
+parameters:
+  perm_test: 
+    values:
+      - SAA
+      - SZA
+      - sw_dir_cor
+      - slope
+      - aspectSin 
+      - aspectCos  
+      - SRTMGL3_DEM 
+      - HRV
+      - IR_016
+      - IR_039
+      - WV_062
+      - WV_073 
+      - IR_087
+      - IR_097
+      - IR_108
+      - IR_120
+      - IR_134
+      
+  target_var_names: 
+    values:
+      - "[SISGHI-No-Horizon]"
+
+  
+command:
+  - ${interpreter}
+  - ${program}
+  - ${args}
+  - --project_name
+  - TSViT-reg-v3
+  - --exp_name
+  - permTest
+  - --config 
+  - # path to config file of selected trained model
+  - --dataset 
+  - Helio_sza80
+  - --start_date_infer 
+  - 2019-01-01T00
+  - --end_date_infer
+  - 2020-01-01T00
+  - --wandb
+  - --inference
+  - --batch_size
+  - 128 # adapt according to hard-ware
+  

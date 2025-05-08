@@ -1,0 +1,49 @@
+program: train_and_eval/regression_training_transf.py
+name: contextSizeExp
+method: grid
+metric:
+  goal: minimize
+  name: sweep_eval_loss_avg
+parameters:
+  max_seq_len:
+    values: [1, 5, 10, 20, 30, 40, 80, 120]
+  
+  input_var_names: 
+    values:
+      - "[SAA, SZA, SRTMGL3_DEM, slope, aspectCos, aspectSin, sw_dir_cor, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+      - "[ALB, SAA, SZA, SRTMGL3_DEM, slope, aspectCos, aspectSin, sw_dir_cor, HRV, IR_016, IR_039, WV_062, WV_073, IR_087, IR_097, IR_108, IR_120, IR_134]"
+  
+  target_var_names: 
+    values:
+      - "[SISGHI-No-Horizon]"
+
+
+command:
+  - ${interpreter}
+  - ${program}
+  - ${args}
+  - --project_name
+  - TSViT-reg-v3
+  - --exp_name
+  - contextSizeExp
+  - --architecture 
+  - TSViT_reg
+  - --config 
+  - configs/Helio/TSViT_reg.yaml 
+  - --dataset 
+  - Helio_sza80
+  - --start_date_train 
+  - 2015-01-01T00
+  - --end_date_train 
+  - 2017-01-01T00
+  - --start_date_eval 
+  - 2017-01-01T00 
+  - --end_date_eval 
+  - 2018-01-01T00
+  - --wandb
+  - --dset_patching 
+  - --train
+  - --num_epochs
+  - 10
+  - --batch_size
+  - 16 # adapt according to hard-ware
