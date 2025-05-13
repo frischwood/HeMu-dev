@@ -31,7 +31,7 @@ The ready-to-use data required for reproducing the results is available on Zenod
 
 To download and prepare the data:
 1. Download the dataset from the Zenodo repository
-2. Extract the contents to the `data` directory in this repository
+2. Extract the content to the `data/Helio` directory in this repository
 
 ### Download + pre-processing
 All data used is publicly available and can be downloaded independently. The download and pre-processing steps are removed here to simplify reproduction, but are available in the production version of HeMu (see [Related links](#related-links))
@@ -66,7 +66,7 @@ Login to your [wandb acount](https://wandb.ai/site) and get your API key. Create
 
 ### 2. Experiment sweeps and single training runs:
 To launch a sweep:
-- set the path to the sweep .yaml file in  ```configs/Helio/0_sweeps/ini_sweep_reg.py``` and run the script. The wandb CLI will return a sweep ID. The sweeps are defined in the config .yaml files in ```configs/Helio/0_sweeps```. On your wandb dashboard a new sweep was created and is pending.
+- Set the path to the sweep .yaml file in  ```configs/Helio/0_sweeps/ini_sweep_reg.py``` and run the script. The wandb CLI will return a sweep ID. The sweeps are defined in the config .yaml files in ```configs/Helio/0_sweeps```. On your wandb dashboard a new sweep was created and is pending.
 - Adapt the sweep ID in ```train_and_eval/launch_sweep_agent.py``` and run the script with the following command:
     ```bash
     python train_and_eval/launch_sweep_agent.py --sweep_id <wand_usrname>/<project_name>/<sweep_id> --agent_exp_count <runs_per_agent>
