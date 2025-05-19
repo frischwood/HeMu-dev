@@ -456,7 +456,7 @@ class mDeepHelioAssessor():
         
         # single scatter
         print("Plotting scatter all")
-        fig, ax = plt.subplots(figsize=(8,7))
+        fig, ax = plt.subplots(1,3,figsize=(12,4), sharey=True)
         fig.supylabel("Output:  $GHI_{HeMu}$ [W/$m²$]")
         fig.supxlabel("Target:  $GHI_{HelioMont}$ [W/$m²$]")
         
@@ -471,41 +471,57 @@ class mDeepHelioAssessor():
         self._plot_scatter_01(y = model[self.var].values.flatten(),
                             x = model[f"target_{self.var}"].values.flatten(),
                             sample_ratio=sample4scatter_ratio,
-                            ax=ax, **indivScat_kwargs)
+                            ax=ax[0], **indivScat_kwargs)
+        self._plot_scatter_01(y = model[self.var].resample({"time":"1D"}).mean().values.flatten(),
+                            x = model[f"target_{self.var}"].resample({"time":"1D"}).mean().values.flatten(),
+                            sample_ratio=sample4scatter_ratio,
+                            ax=ax[1], **indivScat_kwargs)
+        self._plot_scatter_01(y = model[self.var].resample({"time":"ME"}).mean().values.flatten(),
+                            x = model[f"target_{self.var}"].resample({"time":"ME"}).mean().values.flatten(),
+                            sample_ratio=sample4scatter_ratio,
+                            ax=ax[2], **indivScat_kwargs)
+        ax[0].set_title("Instantaneous")
+        ax[1].set_title("Daily")
+        ax[1].tick_params(axis="y", length=0)
+        ax[2].set_title("Monthly")
+        ax[2].tick_params(axis="y", length=0)
+        for ax_ in ax:
+            ax_.set_ylim([0,1250])
+            ax_.set_xlim([0,1250])
         plt.tight_layout()
         fig.savefig(output_root + f"/2p_out_tar_Allscat_sample{sample4scatter_ratio}_{self.year}.jpeg", dpi=300, bbox_inches = 'tight')
         plt.close("all")
 
-        # split by csi and albedo
-        print("Plotting scatter by albedo and csi")
-        fig, ax = plt.subplots(len(self.ALB_bands["low"]), len(self.KI_bands["low"]), figsize=(14,12),
-                               sharex=True, sharey=True, gridspec_kw = {'wspace':0.1*(14/12), 'hspace':0.1})
-        fig.subplots_adjust(left=0.1*(14/12), bottom=0.1)
-        fig.supylabel("Output [W/$m²$]")
-        fig.supxlabel("Target [W/$m²$]")
-        for j,(alb_band_low, alb_band_top) in enumerate(zip(self.ALB_bands["low"],self.ALB_bands["top"])):
-                for k, (ki_band_low, ki_band_top) in enumerate(zip(self.KI_bands["low"],self.KI_bands["top"])):
-                    ki_band_idx = (self.ds_aux["KI"] >= ki_band_low) * (self.ds_aux["KI"] < ki_band_top)
-                    alb_band_idx = (self.ds_aux["ALB"] >= alb_band_low) * (self.ds_aux["ALB"] < alb_band_top)
+        # # split by csi and albedo
+        # print("Plotting scatter by albedo and csi")
+        # fig, ax = plt.subplots(len(self.ALB_bands["low"]), len(self.KI_bands["low"]), figsize=(14,12),
+        #                        sharex=True, sharey=True, gridspec_kw = {'wspace':0.1*(14/12), 'hspace':0.1})
+        # fig.subplots_adjust(left=0.1*(14/12), bottom=0.1)
+        # fig.supylabel("Output [W/$m²$]")
+        # fig.supxlabel("Target [W/$m²$]")
+        # for j,(alb_band_low, alb_band_top) in enumerate(zip(self.ALB_bands["low"],self.ALB_bands["top"])):
+        #         for k, (ki_band_low, ki_band_top) in enumerate(zip(self.KI_bands["low"],self.KI_bands["top"])):
+        #             ki_band_idx = (self.ds_aux["KI"] >= ki_band_low) * (self.ds_aux["KI"] < ki_band_top)
+        #             alb_band_idx = (self.ds_aux["ALB"] >= alb_band_low) * (self.ds_aux["ALB"] < alb_band_top)
 
-                indivScat_kwargs=dict(xlabel="", ylabel="")
-                self._plot_scatter_01(y = model.where(ki_band_idx*alb_band_idx)[self.var].values.flatten(),
-                                        x = model.where(ki_band_idx*alb_band_idx)[f"target_{self.var}"].values.flatten(),
-                                        sample_ratio=sample4scatter_ratio,
-                                        ax=ax[k,j], **indivScat_kwargs)
-                # cosmetics
-                ax[k,j].grid(axis="y", alpha=0.2)
-                if j == 0:
-                    ax[k,j].set_ylabel(f"$k_T^*\\in$:[{ki_band_low}-{ki_band_top}]")
-                else:
-                    ax[k,j].tick_params(axis="y", length=0)
+        #         indivScat_kwargs=dict(xlabel="", ylabel="")
+        #         self._plot_scatter_01(y = model.where(ki_band_idx*alb_band_idx)[self.var].values.flatten(),
+        #                                 x = model.where(ki_band_idx*alb_band_idx)[f"target_{self.var}"].values.flatten(),
+        #                                 sample_ratio=sample4scatter_ratio,
+        #                                 ax=ax[k,j], **indivScat_kwargs)
+        #         # cosmetics
+        #         ax[k,j].grid(axis="y", alpha=0.2)
+        #         if j == 0:
+        #             ax[k,j].set_ylabel(f"$k_T^*\\in$:[{ki_band_low}-{ki_band_top}]")
+        #         else:
+        #             ax[k,j].tick_params(axis="y", length=0)
                 
-                if k == 0:
-                    ax[k,j].set_title(f"$\\alpha\\in$[{alb_band_low}-{alb_band_top}[")
-                if k < (len(self.ALB_bands["low"])-1):
-                    ax[k,j].tick_params(axis="x", length=0)
-        # fig.tight_layout()
-        fig.savefig(output_root + f"/2p_out_tar_scat_sample{sample4scatter_ratio}_{self.year}.jpeg", dpi=300, bbox_inches = 'tight')
+        #         if k == 0:
+        #             ax[k,j].set_title(f"$\\alpha\\in$[{alb_band_low}-{alb_band_top}[")
+        #         if k < (len(self.ALB_bands["low"])-1):
+        #             ax[k,j].tick_params(axis="x", length=0)
+        # # fig.tight_layout()
+        # fig.savefig(output_root + f"/2p_out_tar_scat_sample{sample4scatter_ratio}_{self.year}.jpeg", dpi=300, bbox_inches = 'tight')
   
     def plot_ablation(self):
         fig, ax = plt.subplots(len(self.ALB_bands["low"]), len(self.KI_bands["low"]), figsize=(13.5,12), sharex=True, sharey=True)

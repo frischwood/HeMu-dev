@@ -1,12 +1,12 @@
 # HeMu-dev
 
-This repository contains the code and instructions to reproduce the results from the publication [*Retrieval of Surface Solar Radiation through Implicit Albedo Recovery from Temporal Context*](), in which the HelioMont emulator, namely HeMu, was presented. 
+This repository contains the code and instructions to reproduce the results from this [publication](), in which an emulator, namely HeMu, of HelioMont was presented. 
 
 
 If you use this code or data in your research, please cite:
 
 ```bibtex
-[Add citation information when paper is published]
+Retrieval of Surface Solar Radiation through Implicit Albedo Recovery from Temporal Context
 ```
 
 ## Installation
@@ -17,11 +17,26 @@ git clone https://github.com/frischwood/HeMu-dev.git
 cd HeMu-dev
 ```
 
-2. Create and activate the conda environment (adapt cuda and pytorch version to the available hardware):
+2. Build and run the Docker container:
+- First, build the Docker image:
+```bash
+docker build -t hemu-dev .
+```
+
+- Then run the container, replacing the volume paths with your local directories:
+```bash
+docker run --gpus all \
+    -v /path/to/local/data:/app/data/Helio \
+    -v /path/to/local/analysis:/app/analysis/runs \
+    hemu-dev
+```
+Note: Make sure to replace `/path/to/local/data` with the path where you want to store the Helio data, and `/path/to/local/analysis` with the path for storing analysis results.
+
+<!-- 2. Create and activate the conda environment (adapt cuda and pytorch version to the available hardware):
 ```bash
 conda env create -f environment.yml
 conda activate HeMu-dev
-```
+``` -->
 
 ## Data
 
@@ -38,23 +53,23 @@ All data used is publicly available and can be downloaded independently. The dow
 
 ## Repository Structure
 ```
-HeMu-dev/
-├── configs/                    # Configuration files
+HeMu-dev/                      
+├── analysis/                  # Where all plots are produced
+│   └── runs/                  # Contains the inference files for plotting
+├── configs/                   # Configuration files
 │   └── Helio/
 │       ├── 0_sweeps/          # W&B sweep configuration files
 │       ├── 1_train/           # Training configuration files
 │       └── 2_inferences/      # Inference configuration files
 ├── data/                      # Data directory 
-    └── Helio/                 # Extract downloaded directory here
-        ├── 2015_2020/         # Contains all variables (download!)
+│   └── Helio/                 # Extract downloaded directory here
+│       ├── 2015_2020/         # Contains all variables (download!)
 │       └── stats/             # Statistics for each variable over 2015-2020 (download!)
 ├── models/
-│   └── saved_models/          # Saved model checkpoints and logs
-│       └── Helio/
-├── train_and_eval/            # Training and evaluation scripts
-├── inference/                 # Generated inference results
-├── environment.yml            # Dependencies file
-└── README.md
+│   └── saved_models/          # Saved model checkpoints, logs and inferences
+│    
+└──  train_and_eval/           # Training and evaluation scripts
+
 ```
 
 ## Reproduction of the results
@@ -78,10 +93,28 @@ To launch a single training run:
 
 ### 3. Inference
 The inference run will produce SSR estimates maps for a given time period based on a trained model. Sweeps and train runs save their runs (loggings, checkpoints, etc.) in subfolders of ```models/saved_models/Helio```. 
-- To launch inference of a single run: find the path to the corresponding config.yaml file and paste it in ```configs/Helio/2_inferences/run_infer.sh``` and run the script. A new ```inference/``` folder will be created where the infered files (.netcdf) will be placed.
-- To launch inference on all runs of a sweep: set wandb_user_name, project_name and sweep_id in ```configs/Helio/2_inferences/batch_infer.py``` and run the script. This will run an inference for all runs of the sweep in parallel, which might not be supported by the available hard ware. Modify accordingly. 
+- To launch inference of a single run: find the path to the corresponding config.yaml file and paste it in ```configs/Helio/2_inferences/run_infer.sh``` and run the script. A new ```inference/``` subfolder will be created in which the infered files (.netcdf) will be placed.
+- To launch inference on all runs of a sweep: set wandb_user_name, project_name and sweep_id in ```configs/Helio/2_inferences/batch_infer.py``` and run the script. Note: This will run an inference for all runs of the sweep in parallel, which might not be supported by the available hard ware. Modify accordingly. 
 
 ### 4. Plots
+To reproduce the plots of the pre-cited [publication](), place the inference output file ("SISGHI-No-Horizon.nc) of each experiment to its corresponding subfolder in ```analysis/```, following the structure below:
+
+```
+analysis/
+└── runs/                          
+    ├── ConvResNet/                # Baseline model results
+    │   └── SISGHI/
+    │       ├── wAlb/              # With albedo input
+    │       └── woAlb/             # Without albedo input  
+    └── TSViT-r/                   # Main model results
+        └── SISGHI/
+            ├── ablation_var/      # Ablation experiment results
+            ├── contextSizeExp/    # Context size experiments
+            ├── permTest/          # Permutation test results
+            └── prod/              # HeMu chosen 
+```
+
+
 
 ## Related links
 A production version of HeMu is in development: [https://github.com/frischwood/HeMu.git](https://github.com/frischwood/HeMu.git)\
