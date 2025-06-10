@@ -29,7 +29,7 @@ class ResidualBlock(nn.Module):
             out = self.relu(out)
             return out
     
-class ResNet(nn.Module):
+class ConvResNet(nn.Module):
         """Schuurman's resnet"""
         def __init__(self, config):
             block = ResidualBlock

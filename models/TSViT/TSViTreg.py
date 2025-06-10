@@ -31,8 +31,6 @@ class Transformer(nn.Module):
 class TSViTreg(nn.Module):
     """
     Temporal-Spatial ViT modified for regression
-    For improved training speed, this implementation uses a (365 x dim) temporal position encodings indexed for
-    each day of the year. Use TSViT_lookup for a slower, yet more general implementation of lookup position encodings
     """
     def __init__(self, model_config):
         super().__init__()
@@ -79,7 +77,7 @@ class TSViTreg(nn.Module):
         x = x.permute(0, 1, 4, 2, 3)
         B, T, C, H, W = x.shape
         
-        x = x[:, :, :-1] # get rid of time encoding channel
+        x = x[:, :, :-1] # get rid of time encoding channel added in data loader
         x = self.to_patch_embedding(x)
         x = x.reshape(B, -1, T, self.dim) # temporal encoder reshape
         x += repeat(self.temporal_pos_embedding_simple, 'N T d -> B N T d', B=B) # P_T ViT standard (# temporal class token doesn't get pos emb, actually  as if we added 0 to it)

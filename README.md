@@ -66,8 +66,8 @@ HeMu-dev/
 │       ├── 2015_2020/         # Contains all variables (download!)
 │       └── stats/             # Statistics for each variable over 2015-2020 (download!)
 ├── models/
-│   └── saved_models/          # Saved model checkpoints, logs and inferences
-│    
+│   └── saved_models/          # Saved model checkpoints and logs
+│       └── Helio/
 └──  train_and_eval/           # Training and evaluation scripts
 
 ```
@@ -80,8 +80,8 @@ Login to your [wandb acount](https://wandb.ai/site) and get your API key. Create
 - Hardware: all experiments were run with an NVIDIA A100-80GB GPU and 128GB of CPU RAM. For smaller capacities, consider reducing the batch_size and/or the experiment time period (all the data is pre-loaded in RAM).
 
 ### 2. Experiment sweeps and single training runs:
-To launch a sweep:
-- Set the path to the sweep .yaml file in  ```configs/Helio/0_sweeps/ini_sweep_reg.py``` and run the script. The wandb CLI will return a sweep ID. The sweeps are defined in the config .yaml files in ```configs/Helio/0_sweeps```. On your wandb dashboard a new sweep was created and is pending.
+To launch a specific sweep:
+- Set the path to the sweep .yaml file in  ```configs/Helio/0_sweeps/ini_sweep_reg.py``` (e.g. ```yaml_file = "configs/Helio/0_sweeps/sweep_contextSizeExp.yaml"```) and run the script. The wandb CLI will return a sweep ID. The sweeps are defined in the config .yaml files in ```configs/Helio/0_sweeps```. On your wandb dashboard a new sweep was created and is pending.
 - Adapt the sweep ID in ```train_and_eval/launch_sweep_agent.py``` and run the script with the following command:
     ```bash
     python train_and_eval/launch_sweep_agent.py --sweep_id <wand_usrname>/<project_name>/<sweep_id> --agent_exp_count <runs_per_agent>
@@ -89,15 +89,15 @@ To launch a sweep:
     This will launch a wandb agent that will run the different runs of the sweep. The argument ```--agent_exp_count``` sets the number of runs from the sweep the agent will run sequentially. Multiple agents can be launched in parallel. Note: make sure here you're logged-in to your wandb account ```wandb login```.
 
 To launch a single training run:
-- Modify project name and experiment names in the bash scripts in ```configs/Helio/1_train/``` and run them according to the desired architecture. 
+- Modify the project and experiment names in the bash scripts in ```configs/Helio/1_train/``` and run them according to the desired architecture. 
 
 ### 3. Inference
-The inference run will produce SSR estimates maps for a given time period based on a trained model. Sweeps and train runs save their runs (loggings, checkpoints, etc.) in subfolders of ```models/saved_models/Helio```. 
-- To launch inference of a single run: find the path to the corresponding config.yaml file and paste it in ```configs/Helio/2_inferences/run_infer.sh``` and run the script. A new ```inference/``` subfolder will be created in which the infered files (.netcdf) will be placed.
-- To launch inference on all runs of a sweep: set wandb_user_name, project_name and sweep_id in ```configs/Helio/2_inferences/batch_infer.py``` and run the script. Note: This will run an inference for all runs of the sweep in parallel, which might not be supported by the available hard ware. Modify accordingly. 
+The inference run will produce SSR estimates maps for a given time period based on a trained model. Sweeps and train runs write their loggings, checkpoints, etc. in subfolders of ```models/saved_models/Helio```. The naming of the subfolder is made of the run experiment name and a unique hash of the run configuration (e.g.```contextSizeExp-df5a359e0587f79090d843c4de53cdd3```).
+- To launch inference of a single run: find the path to the corresponding config.yaml file, paste it in ```configs/Helio/2_inferences/run_infer.sh``` and run the script. A new ```inference/``` subfolder will be created in the experiment folder.It contains the inference files (.netcdf).
+- To launch inference on all runs of a sweep: set wandb_user_name, project_name and sweep_id in ```configs/Helio/2_inferences/batch_infer.py``` and run the script. Note: this will run an inference for all completed runs of the sweep in parallel. This might not be supported by the available hard ware.
 
 ### 4. Plots
-To reproduce the plots of the pre-cited [publication](), place the inference output file ("SISGHI-No-Horizon.nc) of each experiment to its corresponding subfolder in ```analysis/```, following the structure below:
+To reproduce the plots of the pre-cited [publication](), the inference output file ("SISGHI-No-Horizon.nc) of each experiment needs to be placed to its corresponding subfolder in ```analysis/```, following the structure below:
 
 ```
 analysis/
@@ -105,19 +105,21 @@ analysis/
     ├── ConvResNet/                # Baseline model results
     │   └── SISGHI/
     │       ├── wAlb/              # With albedo input
-    │       └── woAlb/             # Without albedo input  
-    └── TSViT-r/                   # Main model results
+    │       └── woAlb/             # Without albedo input 
+    │
+    └── TSViT-r/                   # TSViT-r results
         └── SISGHI/
             ├── ablation_var/      # Ablation experiment results
             ├── contextSizeExp/    # Context size experiments
             ├── permTest/          # Permutation test results
-            └── prod/              # HeMu chosen 
+            └── prod/              # HeMu (from contextSizeExp: size 40)
 ```
-
+Depending on the experiment, the subfolder tree is more or less deep. For example, in the case of the context size experiment, the inference file of the run with albedo provided as input and a context size of 40 should be placed in ```analysis/runs/TSViT-r/SISGHI/contextSizeExp/wAlb/40```.
+Then, set to ```True``` the experiment to plo`in ```plot_exp.py``` and run the script. Plots will be placed in the corresponding subfolders.
 
 
 ## Related links
-A production version of HeMu is in development: [https://github.com/frischwood/HeMu.git](https://github.com/frischwood/HeMu.git)\
-HeMu inferences will be accessible and downloadable at [https://HeMu.epfl.ch](https://HeMu.epfl.ch).
+An operational version of HeMu is in development: [https://github.com/frischwood/HeMu.git](https://github.com/frischwood/HeMu.git)
+<!-- HeMu inferences will be accessible and downloadable at [https://HeMu.epfl.ch](https://HeMu.epfl.ch). -->
 
 

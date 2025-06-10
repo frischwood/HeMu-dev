@@ -40,7 +40,7 @@ def Helio_reg_transform(model_config, dataset_config, is_training):
         transform_list.append(CutOrPad(max_seq_len=max_seq_len, random_sample=False, from_start=True))  # pad with zeros to maximum sequence length
         transform_list.append(ToTHWC())
 
-    elif "ConvResNet" in model_config["architecture"]:
+    elif "ResNet" in model_config["architecture"]:
         transform_list.append(TileDates(use_hod=model_config["use_hod"], doy_bins=None))    
         transform_list.append(ToCHW())
         if not model_config["inference"]:
