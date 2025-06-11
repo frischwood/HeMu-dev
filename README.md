@@ -1,6 +1,7 @@
 # HeMu-dev
 
-This repository contains the code and instructions to reproduce the results from this [publication](), in which an emulator, namely HeMu, of HelioMont was presented. 
+This repository contains the code and instructions to reproduce the results from this [publication]().
+<!-- , in which an emulator, namely HeMu, of HelioMont was presented.  -->
 
 
 If you use this code or data in your research, please cite:
@@ -10,13 +11,13 @@ Retrieval of Surface Solar Radiation through Implicit Albedo Recovery from Tempo
 ```
 
 ## Installation
-
+Currently supported platform: Linux 
 1. Clone this repository:
 ```bash
 git clone https://github.com/frischwood/HeMu-dev.git
 cd HeMu-dev
 ```
-
+<!-- 
 2. Build and run the Docker container:
 - First, build the Docker image:
 ```bash
@@ -30,13 +31,13 @@ docker run --gpus all \
     -v /path/to/local/analysis:/app/analysis/runs \
     hemu-dev
 ```
-Note: Make sure to replace `/path/to/local/data` with the path where you want to store the Helio data, and `/path/to/local/analysis` with the path for storing analysis results.
+Note: Make sure to replace `/path/to/local/data` with the path where you want to store the Helio data, and `/path/to/local/analysis` with the path for storing analysis results. -->
 
-<!-- 2. Create and activate the conda environment (adapt cuda and pytorch version to the available hardware):
+2. Create and activate the conda environment (adapt cuda and pytorch version to the available hardware):
 ```bash
 conda env create -f environment.yml
 conda activate HeMu-dev
-``` -->
+```
 
 ## Data
 
@@ -81,7 +82,7 @@ Login to your [wandb acount](https://wandb.ai/site) and get your API key. Create
 
 ### 2. Experiment sweeps and single training runs:
 To launch a specific sweep:
-- Set the path to the sweep .yaml file in  ```configs/Helio/0_sweeps/ini_sweep_reg.py``` (e.g. ```yaml_file = "configs/Helio/0_sweeps/sweep_contextSizeExp.yaml"```) and run the script. The wandb CLI will return a sweep ID. The sweeps are defined in the config .yaml files in ```configs/Helio/0_sweeps```. On your wandb dashboard a new sweep was created and is pending.
+- Set the path to the sweep .yaml file in  ```configs/Helio/0_sweeps/ini_sweep_reg.py``` (e.g. ```yaml_file = "configs/Helio/0_sweeps/sweep_contextSizeExp.yaml"```), run the script and follow the instructions returned by the wandb CLI. The wandb CLI will return a sweep ID. The sweeps are defined in the config .yaml files in ```configs/Helio/0_sweeps```. On your wandb dashboard a new sweep was created and is pending.
 - Adapt the sweep ID in ```train_and_eval/launch_sweep_agent.py``` and run the script with the following command:
     ```bash
     python train_and_eval/launch_sweep_agent.py --sweep_id <wand_usrname>/<project_name>/<sweep_id> --agent_exp_count <runs_per_agent>
